@@ -1,0 +1,9 @@
+# build artifacts
+*.o
+*.a
+tests/test_pmcp
+
+# region files and journals
+*.pmcp
+*.pmcp.journal
+tests/crashwork/
