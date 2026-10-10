@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: json-chamber
+authors:
+  - family-names: Tasz
+    given-names: Corey
+    email: corey@slidphilabs.com
+    affiliation: Slid Phi Labs
+version: 1.4.1
+date-released: 2026-10-09
+repository-code: "https://github.com/ceedot-rock/json-chamber-sdk"
+url: "https://www.slidphilabs.com/chamber"
+license: AGPL-3.0-or-later
+abstract: "Two-key JSON sealing protocol. One key seals, two independent keys open; ciphertext never expires. Cloak license: $9/month or $99/year; opening sealed blobs is keys-only, never license-gated."

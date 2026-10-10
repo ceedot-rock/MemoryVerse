@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "json-chamber"
+version = "1.4.1"
+description = "Chamber JSON sealing — φ-split keyword shares. Cloak license $9/mo · $99/yr. Open is keys-only; ciphertext does not expire."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "AGPL-3.0-or-later OR LicenseRef-SlidPhi-Commercial" }
+authors = [
+  { name = "Slid Phi Labs", email = "corey@slidphilabs.com" }
+]
+keywords = ["chamber", "seal", "cloak", "json", "security", "bsl", "trial", "benefit_check"]
+dependencies = [
+  "cryptography>=42.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+server = ["flask>=3.0", "stripe>=10.0"]
+
+[project.urls]
+Homepage = "https://www.slidphilabs.com/chamber"
+Documentation = "https://www.slidphilabs.com/chamber"
+Repository = "https://github.com/ceedot-rock/json-chamber-sdk"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["json_chamber*"]

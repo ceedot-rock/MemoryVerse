@@ -1,0 +1,59 @@
+name: Audited checks
+
+# Additive-only: the existing pypi-publish.yml is untouched.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Python tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package with dev + server extras
+        run: pip install ".[dev,server]"
+      - name: Run pytest
+        run: python -m pytest json_chamber/test_aont.py -q
+
+  secrets-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan for committed secrets
+        run: |
+          set -e
+          echo "Scanning for common secret patterns..."
+          # --exclude keeps the scan from matching this very file's pattern.
+          ! grep -rnE "AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{20,}|gho_[A-Za-z0-9]{20,}|BEGIN [A-Z ]*PRIVATE KEY|sk_(live|test)_[A-Za-z0-9]+|xox[bap]-[A-Za-z0-9-]+|-----BEGIN" \
+            --include="*.py" --include="*.html" --include="*.txt" --include="*.md" --include="*.yml" --exclude="audited-checks.yml" .
+          echo "No secrets found."
+
+  server-smoke:
+    name: Server smoke test
+    runs-on: ubuntu-latest
+    needs: [tests, secrets-scan]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package with server extras
+        run: pip install ".[server]"
+      - name: Boot server and probe /health
+        run: |
+          python3 server/checkout_server.py & SRV=$!
+          for i in $(seq 1 20); do curl -sf localhost:4242/health && break; sleep 1; done
+          curl -sf localhost:4242/health | grep -q '"ok": *true'
+          curl -sf localhost:4242/health | grep -q '"control_plane": *"json-chamber"'
+          kill $SRV

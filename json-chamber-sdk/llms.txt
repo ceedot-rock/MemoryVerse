@@ -1,0 +1,21 @@
+# json-chamber
+
+Chamber is a two-key JSON sealing protocol from Slid Phi Labs, for agents and services that must store secrets they can't afford to leak (API keys, credentials, payloads at rest). One key seals, two independent keys open; the ciphertext never expires, and opening an already-sealed blob needs nothing but the keys — no license, no clock.
+
+## Key facts
+
+- Install: `pip install json-chamber`.
+- Sealing new JSON needs a cloak license: free 24-hour try, then $9/month or $99/year. Product checkout: https://www.slidphilabs.com/chamber
+- Open (of already-sealed blobs) is keys only — never gated by the license clock.
+- License: AGPL-3.0-or-later OR Slid Phi Labs Commercial License.
+- MCP server: https://github.com/ceedot-rock/json-chamber-mcp
+- Contact: corey@slidphilabs.com. Lab: https://www.slidphilabs.com
+
+## Quick start
+
+```python
+from json_chamber import cloak_json, open_json
+
+sealed = cloak_json({"api_key": "sk-live-..."})
+original = open_json(sealed)  # keys only — works even after the cloak license ends
+```
